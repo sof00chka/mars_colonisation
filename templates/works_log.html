@@ -2,24 +2,38 @@
 
 {% block content %}
 <h2>Works log</h2>
-{% for job in jobs %}
-<h3 style="text-align: left;">Action # {{ loop.index }}</h3>
-<table>
+
+{% if jobs %}
+<table class="table table-bordered">
+    <thead>
     <tr>
+        <th>#</th>
         <th>Title of activity</th>
         <th>Team leader</th>
         <th>Duration</th>
         <th>List of collaborators</th>
         <th>Is finished</th>
     </tr>
+    </thead>
+    <tbody>
+    {% for job in jobs %}
     <tr>
+        <td>{{ loop.index }}</td>
         <td>{{ job.job }}</td>
         <td>{{ job.team_leader }}</td>
         <td>{{ job.work_size }} hours</td>
         <td>{{ job.collaborators }}</td>
         <td>{{ "Is finished" if job.is_finished else "Is not finished" }}</td>
     </tr>
+    {% endfor %}
+    </tbody>
 </table>
+{% else %}
+<p>No jobs found.</p>
+{% endif %}
+
+{% if current_user.is_authenticated %}
 <br>
-{% endfor %}
+<a href="/add_job" class="btn btn-secondary">Add new job</a>
+{% endif %}
 {% endblock %}

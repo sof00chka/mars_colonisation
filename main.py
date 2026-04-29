@@ -1,9 +1,10 @@
 from flask import Flask, render_template, redirect
-from flask_login import LoginManager, login_user, login_required, logout_user
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
 from data import db_session
 from data.jobs import Jobs
 from data.users import User
+from forms.jobs import JobsForm
 from forms.user import RegisterForm, LoginForm
 
 app = Flask(__name__)
@@ -20,13 +21,8 @@ def load_user(user_id):
 
 @app.route('/')
 @app.route('/index')
-def index():
-    return render_template('index.html')
-
-
 @app.route('/works_log')
 def works_log():
-    db_session.global_init("db/mars_explorer.db")
     db_sess = db_session.create_session()
     jobs = db_sess.query(Jobs).all()
     return render_template('works_log.html', jobs=jobs)
@@ -81,6 +77,26 @@ def login():
 def logout():
     logout_user()
     return redirect("/")
+
+
+@app.route('/add_job', methods=['GET', 'POST'])
+@login_required
+def add_job():
+    form = JobsForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        job = Jobs()
+        job.job = form.job.data
+        job.work_size = form.work_size.data
+        job.collaborators = form.collaborators.data
+        job.start_date = form.start_date.data
+        job.end_date = form.end_date.data
+        job.is_finished = form.is_finished.data
+        current_user.jobs.append(job)
+        db_sess.merge(current_user)
+        db_sess.commit()
+        return redirect('/')
+    return render_template('jobsform.html', title='Добавление работы', form=form)
 
 
 def main():
