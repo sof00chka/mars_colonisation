@@ -16,9 +16,13 @@ print(post('http://localhost:5000/api/v2/users', json={
     'modified_date': '2026-05-04'
 }).json())
 print(post('http://localhost:5000/api/v2/users', json={
-    'surname': 'Сидорова', 'name': 'Анна', 'age': 25,
-    'position': 'Дизайнер', 'speciality': 'UI/UX',
-    'address': 'Питер', 'email': 'anna@example.com',
-    'modified_date': '2026-05-04'
+    'surname': 'Сидорова',
+    'name': 'Анна',
+    'age': 25,
+    'position': 'Дизайнер',
+    'speciality': 'UI/UX',
+    'address': 'Питер',
+    'email': 'anna@example.com'
 }).json())
+
 print(get('http://localhost:5000/api/v2/users').json())
