@@ -1,8 +1,8 @@
-from flask import Flask, render_template, redirect, abort, request, make_response, jsonify
+from api import users_api, jobs_api
+from flask import Flask, render_template, redirect, abort, request
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask_restful import Api
 
-import jobs_api
 from data import db_session
 from data.departments import Department
 from data.jobs import Jobs
@@ -10,8 +10,6 @@ from data.users import User
 from forms.departments import DepartmentsForm
 from forms.jobs import JobsForm
 from forms.user import RegisterForm, LoginForm
-from resourses.jobs_resource import JobsListResource, JobsResource
-from resourses.users_resource import UsersListResource, UsersResource
 
 app = Flask(__name__)
 api = Api(app)
@@ -237,11 +235,19 @@ def delete_department(id):
 
 def main():
     db_session.global_init("db/blogs.db")
-    api.add_resource(JobsResource, '/api/v2/jobs/<int:job_id>')
-    api.add_resource(UsersResource, '/api/v2/users/<int:user_id>')
-    api.add_resource(JobsListResource, '/api/v2/jobs')
-    api.add_resource(UsersListResource, '/api/v2/users')
+
+    # app.register_blueprint(jobs_api.blueprint)
+    # app.register_blueprint(api_user.blueprint)
+
+    # api.add_resource(JobsResource, '/api/v2/jobs/<int:job_id>')
+    # api.add_resource(UsersResource, '/api/v2/users/<int:user_id>')
+    # api.add_resource(JobsListResource, '/api/v2/jobs')
+    # api.add_resource(UsersListResource, '/api/v2/users')
     app.run()
+
+
+if __name__ == '__main__':
+    main()
 
 
 if __name__ == '__main__':
