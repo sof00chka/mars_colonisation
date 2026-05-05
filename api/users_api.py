@@ -128,3 +128,53 @@ def delete_user(user_id):
     db_sess.delete(user)
     db_sess.commit()
     return jsonify({'success': 'OK'})
+
+
+from flask import render_template
+import requests
+
+
+@blueprint.route('/users_show/<int:user_id>', methods=['GET'])
+def show_user_city(user_id):
+    db_sess = db_session.create_session()
+    user = db_sess.get(User, user_id)
+    if not user:
+        return make_response(jsonify({'error': 'User not found'}), 404)
+
+    city = user.city_from
+    if not city:
+        return make_response(jsonify({'error': 'City not specified'}), 404)
+
+    geocoder_api_server = "http://geocode-maps.yandex.ru/1.x/"
+    geocoder_params = {
+        "apikey": "8013b162-6b42-4997-9691-77b7074026e0",
+        "geocode": city,
+        "format": "json"
+    }
+
+    try:
+        response = requests.get(geocoder_api_server, params=geocoder_params)
+        json_response = response.json()
+        feature_member = json_response["response"]["GeoObjectCollection"]["featureMember"]
+
+        if feature_member:
+            toponym = feature_member[0]["GeoObject"]
+            toponym_coordinates = toponym["Point"]["pos"]
+            lon, lat = toponym_coordinates.split(" ")
+
+            return render_template('user_city.html',
+                                   user=user,
+                                   city=city,
+                                   lon=lon,
+                                   lat=lat,
+                                   api_key='f3a0fe3a-b07e-4840-a1da-06f18b2ddf13')
+        else:
+            return render_template('user_city.html',
+                                   user=user,
+                                   city=city,
+                                   error="Город не найден")
+    except Exception as e:
+        return render_template('user_city.html',
+                               user=user,
+                               city=city,
+                               error=f"Ошибка: {str(e)}")

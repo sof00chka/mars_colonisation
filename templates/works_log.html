@@ -4,6 +4,7 @@
 <h2>Works log</h2>
 {% if current_user.is_authenticated %}
 <div class="add-job-container">
+    <a href="/users_show/{{ user.id }}">Посмотреть родной город</a>
     <a href="/add_job" class="btn btn-secondary">Добавить</a>
     <a href="/departments" class="btn btn-secondary">Go to departments</a>
 </div>

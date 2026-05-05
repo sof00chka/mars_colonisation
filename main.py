@@ -29,7 +29,7 @@ def load_user(user_id):
 def works_log():
     db_sess = db_session.create_session()
     jobs = db_sess.query(Jobs).all()
-    return render_template('works_log.html', jobs=jobs)
+    return render_template('works_log.html', jobs=jobs, user=current_user)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -236,8 +236,8 @@ def delete_department(id):
 def main():
     db_session.global_init("db/blogs.db")
 
-    # app.register_blueprint(jobs_api.blueprint)
-    # app.register_blueprint(api_user.blueprint)
+    app.register_blueprint(jobs_api.blueprint)
+    app.register_blueprint(users_api.blueprint)
 
     # api.add_resource(JobsResource, '/api/v2/jobs/<int:job_id>')
     # api.add_resource(UsersResource, '/api/v2/users/<int:user_id>')

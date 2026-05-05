@@ -1,0 +1,18 @@
+\{% extends "index.html" %}
+
+{% block content %}
+<div style="text-align: center;">
+    <h2>Родной город колониста</h2>
+    <p>{{ user.surname }} {{ user.name }} из города <strong>{{ city }}</strong></p>
+
+    {% if error %}
+    <p style="color: red;">{{ error }}</p>
+    {% else %}
+    <img src="https://static-maps.yandex.ru/1.x/?ll={{ lon }},{{ lat }}&spn=0.5,0.5&l=map&size=600,400" alt="Карта города {{ city }}">
+    <br>
+    {% endif %}
+
+    <br><br>
+    <a href="/works_log">Назад</a>
+</div>
+{% endblock %}
